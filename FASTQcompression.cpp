@@ -294,11 +294,12 @@ void process_cluster(uint64_t begin, uint64_t i){
     uint64_t start=(begin>=border?begin-border:0);
     
     //printing bases+QS in the cluster to look them up
+    cout << "----\n";
     for(uint64_t j = start; j <= i; ++j){
         
         cout << bwt[j] << "\t" << (int)QUAL[j]-33 << endl;
     }
-    
+    cout << "****\n";
     /*
      *
      * MODIFY QS IN THE CLUSTER, AND POSSIBLY CHANGE BASES STORING MODIFIED SYMBOLS in BWT_MOD IN ORDER NOT TO LOOSE BWT REVERSIBILITY
@@ -405,16 +406,17 @@ void run(){
     cout     << endl << "Done." << endl;
     
     //print clusters statistics (i.e. number of bases that fall inside each cluster of a fixed size)
-    uint64_t scale = *max_element(CLUST_SIZES.begin(), CLUST_SIZES.end());
-    
-    for(int i=0;i<=MAX_CLUST_LEN;++i){
-        
-        cout << i << ( i < 10 ? "   " : (i<100 ? "  " : " "));
-        for(uint64_t j = 0; j < (100*CLUST_SIZES[i])/scale; ++j) cout << "-";
-        cout << " " << CLUST_SIZES[i] << endl;
-        
-    }
-    
+    /*
+     uint64_t scale = *max_element(CLUST_SIZES.begin(), CLUST_SIZES.end());
+     
+     for(int i=0;i<=MAX_CLUST_LEN;++i){
+     
+     cout << i << ( i < 10 ? "   " : (i<100 ? "  " : " "));
+     for(uint64_t j = 0; j < (100*CLUST_SIZES[i])/scale; ++j) cout << "-";
+     cout << " " << CLUST_SIZES[i] << endl;
+     
+     }
+     */
 }
 
 /*
@@ -679,50 +681,53 @@ int main(int argc, char** argv){
     
     //start procedure run
     run();
-    
+    cout << "end run" << endl;
     //invert BWT
     invert();
+    cout << "end invert" << endl;
     
     cout << clusters_size << " (" << (double(100*clusters_size)/BWT_MOD.size()) <<  "%) bases fall inside a cluster" << endl;
     cout << "done. " << modified << "/" << BWT_MOD.size() << " bases have been modified (" << 100*double(modified)/BWT_MOD.size() << "% of all bases and " <<
     100*double(modified)/clusters_size << "% of bases inside clusters)." << endl;
     
-    if(debug) load_IDs();
+    if(debug)
+        load_IDs();
     
-    cout << "Cumulative distribution of base qualities before: " << endl;
-    uint64_t sum_tot = 0;
-    for(auto x : statistics_qual_before) sum_tot+=x;
+    /*
+     cout << "Cumulative distribution of base qualities before: " << endl;
+     uint64_t sum_tot = 0;
+     for(auto x : statistics_qual_before) sum_tot+=x;
+     
+     uint64_t sum = 0;
+     
+     for(int i=0;i<50;++i){
+     
+     sum += statistics_qual_before[i];
+     cout << i << "\t" << statistics_qual_before[i] << "\t" << double(sum)/sum_tot << endl;
+     
+     }
+     
+     cout << endl;
+     
+     
+     
+     cout << "Cumulative distribution of base qualities after: " << endl;
+     sum_tot = 0;
+     for(auto x : statistics_qual_after) sum_tot+=x;
+     
+     sum = 0;
+     
+     for(int i=0;i<50;++i){
+     
+     sum += statistics_qual_after[i];
+     cout << i << "\t" << double(sum)/sum_tot << endl;
+     
+     }
+     
+     cout << endl;
+     */
     
-    uint64_t sum = 0;
-    
-    for(int i=0;i<50;++i){
-        
-        sum += statistics_qual_before[i];
-        cout << i << "\t" << statistics_qual_before[i] << "\t" << double(sum)/sum_tot << endl;
-        
-    }
-    
-    cout << endl;
-    
-    
-    
-    cout << "Cumulative distribution of base qualities after: " << endl;
-    sum_tot = 0;
-    for(auto x : statistics_qual_after) sum_tot+=x;
-    
-    sum = 0;
-    
-    for(int i=0;i<50;++i){
-        
-        sum += statistics_qual_after[i];
-        cout << i << "\t" << double(sum)/sum_tot << endl;
-        
-    }
-    
-    cout << endl;
-    
-    if(debug) print_info();
+    if(debug)
+        print_info();
     
 }
-
-
