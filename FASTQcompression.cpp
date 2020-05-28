@@ -84,7 +84,7 @@ void help(){
     "-t <arg>    ASCII value of terminator character. Default: " << int('#') << " (#)." << endl <<
     "-D          Print debug info for each BWT position." << endl << endl <<
     
-    "\nTo run fq_compression, you must first build the extended Burrows-Wheeler Transform " <<
+    "\nTo run FASTQcompression, you must first build the extended Burrows-Wheeler Transform " <<
     "of the input DNA sequences and the corresponding permutation of base quality scores." << endl;
     
     exit(0);
@@ -658,7 +658,7 @@ int main(int argc, char** argv){
     }
     
     
-    cout << "This is fq_compression." << endl;
+    cout << "This is FASTQcompression." << endl;
     cout << "\tK: " << K << endl;
     cout << "Output fastq file: " << output << endl;
     
