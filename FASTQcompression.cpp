@@ -71,7 +71,7 @@ dna_bwt_t bwt;//the BWT data structure
 
 void help(){
     
-    cout << "fq_compression [options]" << endl <<
+    cout << "FASTQcompression [options]" << endl <<
     "Options:" << endl <<
     "-h          Print this help." << endl <<
     "-e <arg>    Input eBWT file (A,C,G,T,#) of DNA (REQUIRED)." << endl <<
@@ -648,7 +648,7 @@ int main(int argc, char** argv){
        ) help();
     
     if(not file_exists(input_dna)){
-        cout << "Error: could not find file " << input_dna << endl << endl;
+        cout << "Error: could not find file " << input_dna << "." << endl << endl;
         help();
     }
     
