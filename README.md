@@ -1,6 +1,6 @@
 # FASTQcompression
 
-Per compilarlo può usare g++.
+Per compilarlo usare g++.
 L'eseguibile si può lanciare usando il comando
 ```sh
 ./fq_compression -e esempio.fq.ebwt -q esempio.fq.ebwt.qs -f esempio.fq -o risultato.fq
