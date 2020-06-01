@@ -303,18 +303,19 @@ void process_cluster(uint64_t begin, uint64_t i){
         cout << bwt[j] << "\t" << (int)QUAL[j]-33 << endl;
     }
     cout << "****\n";
-    
-    //reset temporary vector that stores frequencies in the cluster
-	freqs['A'] = 0;
-	freqs['C'] = 0;
-	freqs['G'] = 0;
-	freqs['T'] = 0;
+	
     /*
      *
      * MODIFY QS IN THE CLUSTER, AND POSSIBLY CHANGE BASES STORING MODIFIED SYMBOLS in BWT_MOD IN ORDER NOT TO LOOSE BWT REVERSIBILITY
      *
      */
-    
+	
+	
+    //reset temporary vector that stores frequencies in the cluster
+	freqs['A'] = 0;
+	freqs['C'] = 0;
+	freqs['G'] = 0;
+	freqs['T'] = 0;
 }
 
 /*
