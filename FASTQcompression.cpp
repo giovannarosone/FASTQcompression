@@ -42,6 +42,8 @@ vector<string> read_ids;//ID of each read
 uint64_t modified = 0;//count how many bases have been modified
 uint64_t clusters_size=0;//total number of bases inside clusters
 
+vector<uint64_t> freqs(256,0);//temporary vector used to count frequency of bases inside the currently analyzed cluster
+
 vector<uint64_t> statistics_qual_before(256,0);//count absolute frequencies of qualities in reads, before modifying
 vector<uint64_t> statistics_qual_after(256,0);//count absolute frequencies of qualities in reads, after modifying
 
@@ -296,10 +298,17 @@ void process_cluster(uint64_t begin, uint64_t i){
     //printing bases+QS in the cluster to look them up
     cout << "----\n";
     for(uint64_t j = start; j <= i; ++j){
-        
+        if(bwt[j] != bwt.get_term())
+            freqs[bwt[j]]++;
         cout << bwt[j] << "\t" << (int)QUAL[j]-33 << endl;
     }
     cout << "****\n";
+    
+    //reset temporary vector that stores frequencies in the cluster
+	freqs['A'] = 0;
+	freqs['C'] = 0;
+	freqs['G'] = 0;
+	freqs['T'] = 0;
     /*
      *
      * MODIFY QS IN THE CLUSTER, AND POSSIBLY CHANGE BASES STORING MODIFIED SYMBOLS in BWT_MOD IN ORDER NOT TO LOOSE BWT REVERSIBILITY
