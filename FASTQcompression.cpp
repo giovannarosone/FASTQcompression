@@ -45,6 +45,8 @@ vector<string> read_ids;//ID of each read
 uint64_t modified = 0;//count how many bases have been modified
 uint64_t clusters_size=0;//total number of bases inside clusters
 
+vector<uint64_t> freqs(256,0);//temporary vector used to count frequency of bases inside the currently analyzed cluster
+
 vector<uint64_t> statistics_qual_before(256,0);//count absolute frequencies of qualities in reads, before modifying
 vector<uint64_t> statistics_qual_after(256,0);//count absolute frequencies of qualities in reads, after modifying
 
@@ -295,15 +297,13 @@ void process_cluster(uint64_t begin, uint64_t i){
 
 
 
-    map<char, uint64_t> freqs;
-
     float freq_threshold = 40;
 
     char maxqs = '!';
 
     uint64_t maxfreq = 0;
 
-    char morefreq;
+    char mostfreq;
 
   
     //include/exclude some bases
@@ -315,23 +315,16 @@ void process_cluster(uint64_t begin, uint64_t i){
     for(uint64_t j = start; j <= i; ++j){
 
 
-        /*Counts the frequency of each base and stores it in a hashmap, moreover stores the maximum QS in a variable*/
-	if(bwt[j] != '#'){
+        /*Counts the frequency of each base and stores it in a vector, moreover stores the maximum QS in a variable*/
+	if(bwt[j] != bwt.get_term()){
+            freqs[bwt[j]]++;
 
-		if(QUAL[j] > maxqs){
-			maxqs = QUAL[j];
-		}
-
-		if(freqs.find(bwt[j]) != freqs.end()){
-
-			freqs[bwt[j]]++;
-		}
-		else{
-			freqs[bwt[j]] = 1;
-
-		}
+	    if(QUAL[j] > maxqs){
+		maxqs = QUAL[j];
+	    }
 
 	}
+
 
         cout << bwt[j] << "\t" << (int)QUAL[j]-33 << endl;
     }
@@ -339,36 +332,34 @@ void process_cluster(uint64_t begin, uint64_t i){
     cout << "****\n";
 
 
-    /*Through this iterator we are able to detect the more frequent base in cluster
-      It iterates over a hashmap of maximum 4 elements*/
-    map<char, uint64_t>::iterator it = freqs.begin();
-    while(it != freqs.end()){
-	
-	if(maxfreq < (it->second)){
-		maxfreq = it->second;
-		morefreq = it->first;
-	} 
-	it++;
-    }
+    /*Through these variables we obtain the most frequent base in the cluster and its frequency */
+    mostfreq = std::max_element(freqs.begin(),freqs.end()) - freqs.begin();
+    maxfreq = *std::max_element(freqs.begin(), freqs.end());
 
 
     /*In this cycle we modify the values of QS and, if the base is less frequent than freq_threshold, also the value stored in BWT_MOD*/
     for(uint64_t j = start; j <= i; ++j){
 
-	if(bwt[j] != '#'){
+	if(bwt[j] != bwt.get_term()){
 
 		if(((float)freqs[bwt[j]]*100/size) >= freq_threshold){
 			QUAL[j] = maxqs;
 		}
 		else{
 			QUAL[j] = maxqs;
-			BWT_MOD[j] = morefreq;
+			BWT_MOD[j] = mostfreq;
 			modified++;
 		}
 	
 	}
 
     }
+
+    //reset temporary vector that stores frequencies in the cluster
+	freqs['A'] = 0;
+	freqs['C'] = 0;
+	freqs['G'] = 0;
+	freqs['T'] = 0;
 
     
 }
