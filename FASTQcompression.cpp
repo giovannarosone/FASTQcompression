@@ -74,6 +74,11 @@ vector<bool> LCP_threshold;//bitvector that stores LCP values that exceed the th
 
 dna_bwt_t bwt;//the BWT data structure
 
+float rare_threshold = 40;//Thresholds used to determinate which bases to discard from the cluster
+float quality_threshold = 20; 
+
+
+
 void help(){
     
     cout << "FASTQcompression [options]" << endl <<
@@ -277,6 +282,32 @@ void detect_minima(){
 
 
 
+//This function calculates the average quality score in a cluster
+int flat_qs(uint64_t start, uint64_t end){
+
+int sum=0;
+int num=0;
+
+for(uint64_t j=start; j<=end; j++){
+
+	if(bwt[j] != bwt.get_term()){
+
+		sum=sum+(int)QUAL[j];
+		num++;
+	}
+
+}
+
+return (sum/num);
+
+}
+
+
+
+
+
+
+
 
 
 /*
@@ -295,16 +326,11 @@ void process_cluster(uint64_t begin, uint64_t i){
     //cluster is too short
     if(size < m) return;
 
-
-
-    float freq_threshold = 40;
-
-    char maxqs = '!';
+    char avg_qs;
 
     uint64_t maxfreq = 0;
 
     char mostfreq;
-
   
     //include/exclude some bases
     uint64_t start=(begin>=border?begin-border:0);
@@ -318,17 +344,13 @@ void process_cluster(uint64_t begin, uint64_t i){
         /*Counts the frequency of each base and stores it in a vector, moreover stores the maximum QS in a variable*/
 	if(bwt[j] != bwt.get_term()){
             freqs[bwt[j]]++;
-
-	    if(QUAL[j] > maxqs){
-		maxqs = QUAL[j];
-	    }
-
 	}
-
 
         cout << bwt[j] << "\t" << (int)QUAL[j]-33 << endl;
     }
-
+    
+    /*Though flat_qs we obtain the average qs in the cluster*/
+    avg_qs = flat_qs(start,i);
     cout << "****\n";
 
 
@@ -337,19 +359,23 @@ void process_cluster(uint64_t begin, uint64_t i){
     maxfreq = *std::max_element(freqs.begin(), freqs.end());
 
 
-    /*In this cycle we modify the values of QS and, if the base is less frequent than freq_threshold, also the value stored in BWT_MOD*/
+    /*In this cycle we modify the values of QS and, if the base is less frequent than rare_threshold and its QS is minor then quality_threshold, also the value stored in BWT_MOD*/
     for(uint64_t j = start; j <= i; ++j){
 
 	if(bwt[j] != bwt.get_term()){
 
-		if(((float)freqs[bwt[j]]*100/size) >= freq_threshold){
-			QUAL[j] = maxqs;
+		if(((float)freqs[bwt[j]]*100/size) < rare_threshold){
+
+			if((int)(QUAL[j]-33) < quality_threshold){
+				BWT_MOD[j] = mostfreq;
+				modified++;
+			}
+			
+
 		}
-		else{
-			QUAL[j] = maxqs;
-			BWT_MOD[j] = mostfreq;
-			modified++;
-		}
+		
+		QUAL[j] = avg_qs;
+
 	
 	}
 
@@ -546,11 +572,17 @@ void invert()
             {
                 if (qualities[k] == qualities_rc[k])
                 {
-                    //qualità uguali
+                    if(bases[k] != bases_rc[k]){
+
+
+		    }
+
                 }
                 else
                 {
-                    //qualità diverse
+                    if(qualities[k] < qualities_rc[k]){
+			bases[k] = bases_rc[k];
+		    }
                 }
             }//end-for
             
