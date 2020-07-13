@@ -687,6 +687,25 @@ inline uint64_t popcount128(__uint128_t x){
 
 }
 
+/*
+ * file contains 'N' characters
+ */
+bool hasN(string filename){
+
+	std:ifstream i(filename);
+
+	char c;
+
+	while (i.get(c)){
+
+		if(c=='N') return true;
+
+	}
+
+	return false;
+
+}
+
 range_t child_TERM(sa_node x){
 	return {x.first_TERM, x.first_A};
 }
@@ -823,6 +842,14 @@ uint8_t number_of_children(pair<sa_node_n,sa_node_n> P){
 
 }
 
+
+
+
+
+
+
+
+
 void update_lcp_threshold(sa_node & x, vector<bool> & LCP_threshold, uint64_t & lcp_values, int K){
 
 	assert(x.first_A >= x.first_TERM);
@@ -854,6 +881,53 @@ void update_lcp_threshold(sa_node & x, vector<bool> & LCP_threshold, uint64_t & 
 	}
 
 }
+
+
+
+
+
+void update_lcp_threshold(sa_node_n & x, vector<bool> & LCP_threshold, uint64_t & lcp_values, int K){
+
+	assert(x.first_A >= x.first_TERM);
+	assert(x.first_C >= x.first_A);
+	assert(x.first_G >= x.first_C);
+	assert(x.first_N >= x.first_G);
+	assert(x.first_T >= x.first_N);
+
+	assert(number_of_children(x) >= 2);
+
+	if(has_child_TERM(x) and x.first_A != x.last){
+		LCP_threshold[x.first_A] = (x.depth>=K);
+		//LCP[x.first_A] = x.depth;
+		lcp_values++;
+	}
+	if(has_child_A(x) and x.first_C != x.last){
+		LCP_threshold[x.first_C] = (x.depth>=K);
+		//LCP[x.first_C] = x.depth;
+		lcp_values++;
+	}
+	if(has_child_C(x) and x.first_G != x.last){
+		LCP_threshold[x.first_G] = (x.depth>=K);
+		//LCP[x.first_G] = x.depth;
+		lcp_values++;
+	}
+	if(has_child_G(x) and x.first_N != x.last){
+		LCP_threshold[x.first_N] = (x.depth>=K);
+		//LCP[x.first_N] = x.depth;
+		lcp_values++;
+	}
+	if(has_child_N(x) and x.first_T != x.last){
+		LCP_threshold[x.first_T] = (x.depth>=K);
+		//LCP[x.first_T] = x.depth;
+		lcp_values++;
+	}
+
+}
+
+
+
+
+
 
 char complement(char b){
 

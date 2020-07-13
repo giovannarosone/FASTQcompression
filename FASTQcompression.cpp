@@ -6,6 +6,8 @@
 //  Copyright © 2020 Giovanna. All rights reserved.
 //
 
+#include <iterator>
+#include <map>
 #include <iostream>
 #include <fstream>
 #include <assert.h>
@@ -18,8 +20,9 @@
 #include <sstream>
 #include <unordered_map>
 #include "include.hpp"
-#include "dna_bwt.hpp"
-#include "dna_string.hpp"
+#include "dna_string_n.hpp"
+#include "dna_bwt_n.hpp"
+
 
 using namespace std;
 
@@ -69,7 +72,12 @@ string BWT_MOD;//string of length |BWT| that duplicates the BWT.
 vector<bool> LCP_minima;//bitvector that stores the LCP minima
 vector<bool> LCP_threshold;//bitvector that stores LCP values that exceed the threshold: >= K
 
-dna_bwt_t bwt;//the BWT data structure
+dna_bwt_n_t bwt;//the BWT data structure
+
+float rare_threshold = 40;//Thresholds used to determinate which bases to discard from the cluster
+float quality_threshold = 20; 
+
+
 
 void help(){
     
@@ -115,7 +123,9 @@ void update_LCP_leaf(sa_leaf L, uint64_t & lcp_values){
     
 }
 
-void update_lcp_minima(sa_node x, uint64_t & n_min){
+void update_lcp_minima(sa_node_n x, uint64_t & n_min){
+
+
     
     /*
      * we have a minimum after the end of each child (that is different than #) of size at least 2 of the input node x, except
@@ -139,8 +149,17 @@ void update_lcp_minima(sa_node x, uint64_t & n_min){
         n_min++;
         
     }
-    
-    if( x.first_T - x.first_G >= 2 and     // there are at least 2 'G'
+
+    if( x.first_N - x.first_G >= 2 and     // there are at least 2 'G'
+       x.first_N < x.last-1             // candidate min in x.first_N is not >= last position
+       ){
+        
+        LCP_minima[x.first_N] = true;
+        n_min++;
+        
+    }
+
+    if( x.first_T - x.first_N >= 2 and     // there are at least 2 'N'
        x.first_T < x.last-1             // candidate min in x.first_T is not >= last position
        ){
         
@@ -148,6 +167,7 @@ void update_lcp_minima(sa_node x, uint64_t & n_min){
         n_min++;
         
     }
+
     
 }
 
@@ -168,7 +188,7 @@ void detect_minima(){
     
     {
         
-        auto TMP_LEAVES = vector<sa_leaf>(4);
+        auto TMP_LEAVES = vector<sa_leaf>(5);
         
         stack<sa_leaf> S;
         S.push(bwt.first_leaf());
@@ -215,12 +235,12 @@ void detect_minima(){
     
     LCP_minima = vector<bool>(n,false);
     
-    auto TMP_NODES = vector<sa_node>(4);
+    auto TMP_NODES = vector<sa_node_n>(5);
     
     uint64_t nodes = 0;//visited ST nodes
     max_stack = 0;
     
-    stack<sa_node> S;
+    stack<sa_node_n> S;
     S.push(bwt.root());
     
     int last_perc_lcp = -1;
@@ -231,7 +251,7 @@ void detect_minima(){
         
         max_stack = S.size() > max_stack ? S.size() : max_stack;
         
-        sa_node N = S.top();
+        sa_node_n N = S.top();
         S.pop();
         nodes++;
         
@@ -274,6 +294,33 @@ void detect_minima(){
 
 
 
+//This function calculates the average quality score in a cluster
+int flat_qs(uint64_t start, uint64_t end){
+
+int sum=0;
+int num=0;
+
+for(uint64_t j=start; j<=end; j++){
+
+	if(bwt[j] != bwt.get_term()){
+
+		sum=sum+(int)QUAL[j];
+	
+	}
+	num++;
+
+}
+
+return (sum/num);
+
+}
+
+
+
+
+
+
+
 
 
 /*
@@ -288,34 +335,73 @@ void process_cluster(uint64_t begin, uint64_t i){
     uint64_t size = (i-begin+1);
     
     clusters_size += size;
-    
+
     //cluster is too short
     if(size < m) return;
-    
+
+    char avg_qs;
+
+    uint64_t maxfreq = 0;
+
+    char mostfreq;
+  
     //include/exclude some bases
     uint64_t start=(begin>=border?begin-border:0);
     
     //printing bases+QS in the cluster to look them up
+    
     cout << "----\n";
     for(uint64_t j = start; j <= i; ++j){
-        if(bwt[j] != bwt.get_term())
+
+
+        /*Counts the frequency of each base and stores it in a vector, moreover stores the maximum QS in a variable*/
+	if(bwt[j] != bwt.get_term()){
             freqs[bwt[j]]++;
+	}
+
         cout << bwt[j] << "\t" << (int)QUAL[j]-33 << endl;
     }
+    
+    /*Though flat_qs we obtain the average qs in the cluster*/
+    avg_qs = flat_qs(start,i);
     cout << "****\n";
+
+
+    /*Through these variables we obtain the most frequent base in the cluster and its frequency */
+    mostfreq = std::max_element(freqs.begin(),freqs.end()) - freqs.begin();
+    maxfreq = *std::max_element(freqs.begin(), freqs.end());
+
+
+    /*In this cycle we modify the values of QS and, if the base is less frequent than rare_threshold and its QS is minor then quality_threshold, also the value stored in     BWT_MOD*/
+    for(uint64_t j = start; j <= i; ++j){
+
+	if(bwt[j] != bwt.get_term()){
+
+		if(((float)freqs[bwt[j]]*100/size) < rare_threshold){
+
+			if((int)(QUAL[j]-33) < quality_threshold){
+				BWT_MOD[j] = mostfreq;
+				modified++;
+			}
+			
+
+		}
+		
+		QUAL[j] = avg_qs;
+
 	
-    /*
-     *
-     * MODIFY QS IN THE CLUSTER, AND POSSIBLY CHANGE BASES STORING MODIFIED SYMBOLS in BWT_MOD IN ORDER NOT TO LOOSE BWT REVERSIBILITY
-     *
-     */
-	
-	
+	}
+
+    }
+
     //reset temporary vector that stores frequencies in the cluster
 	freqs['A'] = 0;
 	freqs['C'] = 0;
 	freqs['G'] = 0;
 	freqs['T'] = 0;
+	freqs['N'] = 0;
+
+    
 }
 
 /*
@@ -500,11 +586,18 @@ void invert()
             {
                 if (qualities[k] == qualities_rc[k])
                 {
-                    //qualità uguali
+                    if(bases[k] != bases_rc[k]){
+
+			cout << "SQS-DB: " << bases[k] << ", " << bases_rc[k] << "-" << (int)qualities[k]-33 <<endl;
+
+		    }
+
                 }
                 else
                 {
-                    //qualità diverse
+                    if(qualities[k] < qualities_rc[k]){
+			bases[k] = bases_rc[k];
+		    }
                 }
             }//end-for
             
@@ -675,21 +768,33 @@ int main(int argc, char** argv){
     cout << endl;
     
     cout << "Phase 1/4: loading and indexing eBWT ... " << flush;
+
+    /*Check if the input file contains the 'N' character
+    bool containsN = hasN(input_dna);
+    if(not containsN){
     
-    bwt = dna_bwt_t(input_dna,TERM);
+    	bwt = dna_bwt_t(input_dna,TERM);
+
+    }
+    else{*/
+
+	bwt = dna_bwt_n_t(input_dna,TERM);
+
+    //}
     
     cout << "done." << endl;
     
     
     //number of reads in the file
-    uint64_t N = bwt.rank(bwt.size(),bwt.get_term());
+    uint64_t N = bwt.rank(bwt.size(),bwt.get_term());	
+							
     cout << "Number of reads: " << N << endl;
     
     
     //detects clusters through local LCP minima
     detect_minima();
     
-    //start procedure run
+    //start procedure run			
     run();
     cout << "end run" << endl;
     //invert BWT
