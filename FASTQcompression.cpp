@@ -350,21 +350,27 @@ void process_cluster(uint64_t begin, uint64_t i){
     
     //printing bases+QS in the cluster to look them up
     
-    cout << "----\n";
+    #if DEBUG
+      cout << "----\n";
+    #endif
     for(uint64_t j = start; j <= i; ++j){
 
 
         /*Counts the frequency of each base and stores it in a vector, moreover stores the maximum QS in a variable*/
-	if(bwt[j] != bwt.get_term()){
-            freqs[bwt[j]]++;
-	}
+      if(bwt[j] != bwt.get_term()){
+        freqs[bwt[j]]++;
+    	}
 
-        cout << bwt[j] << "\t" << (int)QUAL[j]-33 << endl;
+        #if DEBUG
+          cout << bwt[j] << "\t" << (int)QUAL[j]-33 << endl;
+        #endif
     }
     
     /*Though flat_qs we obtain the average qs in the cluster*/
     avg_qs = flat_qs(start,i);
-    cout << "****\n";
+    #if DEBUG
+      cout << "****\n";
+    #endif
 
 
     /*Through these variables we obtain the most frequent base in the cluster and its frequency */
