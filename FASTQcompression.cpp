@@ -305,11 +305,13 @@ for(uint64_t j=start; j<=end; j++){
 	if(bwt[j] != bwt.get_term()){
 
 		sum=sum+(int)QUAL[j];
-	
+		num++;
 	}
-	num++;
+	
 
 }
+
+if(num == 0) return 0;
 
 return (sum/num);
 
@@ -344,33 +346,28 @@ void process_cluster(uint64_t begin, uint64_t i){
     uint64_t maxfreq = 0;
 
     char mostfreq;
+
   
     //include/exclude some bases
     uint64_t start=(begin>=border?begin-border:0);
     
     //printing bases+QS in the cluster to look them up
     
-    #if DEBUG
-      cout << "----\n";
-    #endif
+    cout << "----\n";
     for(uint64_t j = start; j <= i; ++j){
 
 
         /*Counts the frequency of each base and stores it in a vector, moreover stores the maximum QS in a variable*/
-      if(bwt[j] != bwt.get_term()){
-        freqs[bwt[j]]++;
-    	}
+	if(bwt[j] != bwt.get_term()){
+            freqs[bwt[j]]++;
+	}
 
-        #if DEBUG
-          cout << bwt[j] << "\t" << (int)QUAL[j]-33 << endl;
-        #endif
+        cout << bwt[j] << "\t" << (int)QUAL[j]-33 << endl;
     }
     
     /*Though flat_qs we obtain the average qs in the cluster*/
     avg_qs = flat_qs(start,i);
-    #if DEBUG
-      cout << "****\n";
-    #endif
+    cout << "****\n";
 
 
     /*Through these variables we obtain the most frequent base in the cluster and its frequency */
@@ -541,21 +538,24 @@ void invert()
     
     string line;
     
-    
+   
+
     for(uint64_t i = 0;i < (revc?N/2:N);++i)
     {//for each read (if revc=true, only first half of reads)
-        
+	
         string bases;
         string qualities;
         
         uint64_t j = i;//bwt[j] = current read character
         
+
         while(bwt[j] != bwt.get_term())
         {
             
             bases.push_back(BWT_MOD[j]);
             qualities.push_back(QUAL[j]);
             j = bwt.LF(j); //backward search
+
         }
         
         std::reverse(bases.begin(),bases.end());
@@ -609,10 +609,10 @@ void invert()
             
         } //end if
         
-        
-        
+
         for(auto q:qualities) statistics_qual_after[q-33]++;
-        
+
+
         std::getline(in, line);//get read ID from the original FASTQ (headers)
         
         //write output FASTQ file
@@ -620,7 +620,7 @@ void invert()
         out << bases << endl; //bases
         out << "+" << endl;
         out << qualities << endl; //qs
-        
+
         //read input FASTQ file
         std::getline(in, line);//bases
         std::getline(in, line);//+
@@ -775,18 +775,11 @@ int main(int argc, char** argv){
     
     cout << "Phase 1/4: loading and indexing eBWT ... " << flush;
 
-    /*Check if the input file contains the 'N' character
-    bool containsN = hasN(input_dna);
-    if(not containsN){
-    
-    	bwt = dna_bwt_t(input_dna,TERM);
 
-    }
-    else{*/
 
-	bwt = dna_bwt_n_t(input_dna,TERM);
+    bwt = dna_bwt_n_t(input_dna,TERM);
 
-    //}
+  
     
     cout << "done." << endl;
     
@@ -847,8 +840,11 @@ int main(int argc, char** argv){
      
      cout << endl;
      */
+
     
     if(debug)
         print_info();
+
+
     
 }
