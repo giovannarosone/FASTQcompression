@@ -4,9 +4,11 @@ MY_CXX_FLAGS= -std=c++11 #-Wall -Wextra -DNDEBUG
 MY_CXX_OPT_FLAGS= -O3 -m64 
 MY_CXX=g++
 
+M=0
+MODE = -DM=$(M) 
 LFLAGS = -lm -ldl
 
-CXX_FLAGS=$(MY_CXX_FLAGS) $(MY_CXX_OPT_FLAGS) $(LFLAGS)
+CXX_FLAGS=$(MY_CXX_FLAGS) $(MY_CXX_OPT_FLAGS) $(LFLAGS) $(MODE)
 
 ####
 
