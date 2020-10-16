@@ -36,6 +36,7 @@ string output;
  */
 
 bool debug = false; //print debug info
+bool verbose = false; //verbose output
 int max_id_len=20; //in read_info, store at most this number of chars for the IDs
 vector<string> read_info;//if debug, store read coordinate for every BWT position
 //------------
@@ -234,8 +235,8 @@ void detect_minima(){
             
             if(perc_lcp > last_perc_lcp){
                 
-                cout << "LCP: " << perc_lcp << "%.";
-                cout << endl;
+                if(verbose)
+                  cout << "LCP: " << perc_lcp << "%." << endl;
                 
                 last_perc_lcp = perc_lcp;
                 
@@ -288,8 +289,8 @@ void detect_minima(){
         
         if(perc_lcp > last_perc_lcp){
             
-            cout << "LCP: " << perc_lcp << "%.";
-            cout << endl;
+            if(verbose)
+              cout << "LCP: " << perc_lcp << "%." << endl;
             
             last_perc_lcp = perc_lcp;
             
@@ -300,7 +301,7 @@ void detect_minima(){
     cout << "Computed " << lcp_values << "/" << n << " LCP values." << endl;
     cout << "Found " << n_min << " LCP minima." << endl;
     cout << "Max stack depth = " << max_stack << endl;
-    cout << "Processed " << nodes << " suffix-tree nodes." << endl << endl;
+    cout << "Processed " << nodes << " suffix-tree nodes." << endl ;
     
     
 }
@@ -386,7 +387,8 @@ void process_cluster(uint64_t begin, uint64_t i){
     
     //printing bases+QS in the cluster to look them up
     
-    cout << "----\n";
+    if(verbose)
+      cout << "----\n";
     for(uint64_t j = start; j <= i; ++j){
 
 
@@ -395,7 +397,8 @@ void process_cluster(uint64_t begin, uint64_t i){
             freqs[bwt[j]]++;
 	}
 
-        cout << bwt[j] << "\t" << (int)QUAL[j]-33 << endl;
+        if(verbose)
+          cout << bwt[j] << "\t" << (int)QUAL[j]-33 << endl;
     }
     
     /*Through max_qs we obtain the highest qs in the cluster, through avg_qs we obtain the average qs in the cluster, while
@@ -411,7 +414,8 @@ void process_cluster(uint64_t begin, uint64_t i){
 	cout << "WARNING: unsupported choice. The process will use M=0." << endl;
 	newqs = max_qs(start,i);
     #endif
-    cout << "****\n";
+    if(verbose)
+      cout << "****\n";
 
 
     /*Through these variables we obtain the most frequent base in the cluster and its frequency */
@@ -544,8 +548,9 @@ void run(){
         
         if(perc > last_perc){
             
-            cout << perc << "%. ";
-            cout << endl;
+
+            if(verbose)
+              cout << perc << "%. " << endl;
             
             last_perc = perc;
             
@@ -758,7 +763,7 @@ int main(int argc, char** argv){
     if(argc < 3) help();
     
     int opt;
-    while ((opt = getopt(argc, argv, "he:q:o:f:k:m:t:rD")) != -1){
+    while ((opt = getopt(argc, argv, "he:q:o:f:k:m:t:rDv")) != -1){
         switch (opt){
             case 'h':
                 help();
@@ -789,6 +794,9 @@ int main(int argc, char** argv){
                 break;
             case 'D':
                 debug=true;
+                break;
+            case 'v':
+                verbose=true;
                 break;
             default:
                 help();
