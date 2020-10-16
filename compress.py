@@ -34,6 +34,7 @@ def main():
     parser.add_argument('-2', '--step2', help='stop after step 2 (debug only)',action='store_true')
     parser.add_argument('-3', '--step3', help='stop after step 3 (debug only)',action='store_true')
     parser.add_argument('-4', '--step4', help='stop after step 4 (debug only)',action='store_true')
+    parser.add_argument('--original', help='do not call step 2',action='store_true')
     parser.add_argument('--all', help='run all competitors',action='store_true')
     parser.add_argument('-v',  help='verbose: extra info in the log file',action='store_true')
     args = parser.parse_args()
@@ -159,13 +160,19 @@ def step1(args, logfile, logfile_name):
     return execute_command(command, logfile, logfile_name)
 
 def step2(args, logfile, logfile_name):
-    print("--- Step 2 ---", file=logfile); logfile.flush()
-    exe = os.path.join(args.dir, smooth_exe)
-    options = "-e " + args.tmp[0] + " -q " + args.tmp[1] + " -f " + args.input[0]+" -o "+args.out+".fq"
-    command = "{exe} {ifile} {opt}".format(exe=exe, ifile=args.input[0], opt=options)
-    print("=== smooth-qs ===")
-    print(command)
-    return execute_command(command, logfile, logfile_name)
+    if args.original:
+        print("--- Step 2 ---", file=logfile); logfile.flush()
+        command = "cp "+ args.input[0] +" "+args.out+".fq" 
+        print(command)
+        os.system(command)
+    else:
+        print("--- Step 2 ---", file=logfile); logfile.flush()
+        exe = os.path.join(args.dir, smooth_exe)
+        options = "-e " + args.tmp[0] + " -q " + args.tmp[1] + " -f " + args.input[0]+" -o "+args.out+".fq"
+        command = "{exe} {ifile} {opt}".format(exe=exe, ifile=args.input[0], opt=options)
+        print("=== smooth-qs ===")
+        print(command)
+        return execute_command(command, logfile, logfile_name)
     return True
 
 ##
@@ -189,7 +196,7 @@ def step4(args, logfile, logfile_name):
     exe = dna_split 
     ifile = args.out+".fq"
     ofile = args.out+".dna"
-    command = "{exe} {ifile} > {ofile}".format(exe=exe, ifile=args.input[0], ofile=ofile)
+    command = "{exe} {ifile} > {ofile}".format(exe=exe, ifile=ifile, ofile=ofile)
     print("=== streams ===")
     print(command)
     os.system(command)
@@ -197,7 +204,7 @@ def step4(args, logfile, logfile_name):
     ##
     exe = qs_split 
     ofile = args.out+".qs"
-    command = "{exe} {ifile} > {ofile}".format(exe=exe, ifile=args.input[0], ofile=ofile)
+    command = "{exe} {ifile} > {ofile}".format(exe=exe, ifile=ifile, ofile=ofile)
     print(command)
     args.stream.append(args.basename+".qs")
     logfile.flush()
