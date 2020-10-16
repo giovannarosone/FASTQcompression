@@ -16,43 +16,43 @@ cd ../
 Given a string collection in reads.fastq:
 
 ```sh
-python3 compress.py dataset/reads.fastq -o dataset/output --all
+python3 compress.py dataset/reads.fastq -o results/output --all
 ```
 
 ```sh
-Sending logging messages to file: dataset/output.log
+Sending logging messages to file: results/output.log
 === gsufsort ===
-external/gsufsort/gsufsort dataset/reads.fastq --bwt --lcp --qs -o dataset/output
-Elapsed time: 0.1534
+external/gsufsort/gsufsort dataset/reads.fastq --bwt --lcp --qs -o results/output
+Elapsed time: 0.1522
 === smooth-qs ===
-src/fastqcompression dataset/reads.fastq -e dataset/output.bwt -q dataset/output.bwt.qs -f dataset/reads.fastq -o dataset/output.fq
-Elapsed time: 0.3738
+src/fastqcompression dataset/reads.fastq -e results/output.bwt -q results/output.bwt.qs -f dataset/reads.fastq -o results/output.fq
+Elapsed time: 0.3771
 === header ===
-sed -n 1~4p dataset/output.fq > dataset/output.h
-Elapsed time: 0.0050
+sed -n 1~4p results/output.fq > results/output.h
+Elapsed time: 0.0049
 === streams ===
-sed -n 2~4p dataset/output.fq > dataset/output.dna
-sed -n 4~4p dataset/output.fq > dataset/output.qs
-Elapsed time: 0.0107
+sed -n 2~4p dataset/reads.fastq > results/output.dna
+sed -n 4~4p dataset/reads.fastq > results/output.qs
+Elapsed time: 0.0096
 === compression ===
-7z a -mx9 -mmt12 dataset/output.h.7z dataset/output.h
-7z a -mx9 -mmt12 dataset/output.dna.7z dataset/output.dna
-7z a -mx9 -mmt12 dataset/output.qs.7z dataset/output.qs
-Elapsed time: 0.7119
+7z a -mx9 -mmt12 results/output.h.7z results/output.h
+7z a -mx9 -mmt12 results/output.dna.7z results/output.dna
+7z a -mx9 -mmt12 results/output.qs.7z results/output.qs
+Elapsed time: 0.6872
 === results ===
 Original:	2.44 MB
-Compressed:	0.41 MB
-Ratio = 0.17
+Compressed:	0.43 MB
+Ratio = 0.18
 === gzip ===
 gzip -9 -k -f dataset/reads.fastq
 Compressed:	0.59 MB
 Ratio = 0.24
-Elapsed time: 0.5469
+Elapsed time: 0.5498
 === 7z ===
 7z a -mx9 -mmt12 dataset/reads.fastq.7z dataset/reads.fastq
 Compressed:	0.49 MB
 Ratio = 0.20
-Elapsed time: 0.7912
+Elapsed time: 0.7864
 ```
 
 
