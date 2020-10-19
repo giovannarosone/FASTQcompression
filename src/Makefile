@@ -24,7 +24,7 @@ main: FASTQcompression.cpp
 	$(MY_CXX) FASTQcompression.cpp -o fastqcompression  $(CXX_FLAGS) 
 
 clean:
-	rm fastqcompression 
+	rm -f fastqcompression 
 
 run:
 	./fastqcompression -e $(INPUT).bwt -q $(INPUT).bwt.qs -f $(INPUT).bwt -o $(OUTPUT) 

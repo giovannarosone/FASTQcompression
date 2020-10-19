@@ -4,11 +4,7 @@
 
 ```sh
 git clone --recursive https://github.com/giovannarosone/FASTQcompression.git 
-cd FASTQcompression/external/gsufsort/
-make DNA=1 TERMINATOR=0
-cd ../../src
 make
-cd ../
 ```
 
 ## run
