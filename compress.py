@@ -152,7 +152,7 @@ def step1(args, logfile, logfile_name):
     options = ""
     if len(args.out)>0 : options+="-o "+args.out
     else : options+="-o "+args.input[0]
-    command = "{exe} {ifile} --bwt --lcp --qs {opt}".format(exe=exe, ifile=args.input[0], opt=options)
+    command = "{exe} {ifile} --bwt --qs {opt}".format(exe=exe, ifile=args.input[0], opt=options)
     print("=== gsufsort ==="); print(command)
     # tmp files
     args.tmp.append(args.basename+".bwt")
