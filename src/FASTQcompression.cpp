@@ -320,7 +320,6 @@ else if (newqs >= 25 && newqs <= 29){ newqs = 27;}
 else if (newqs >= 30 && newqs <= 34){ newqs = 33;}
 else if (newqs >= 35 && newqs <= 39){ newqs = 37;}
 else if (newqs >= 40){ newqs = 40;}
-else{ newqs = -33;}
 
 return newqs+33;
 
