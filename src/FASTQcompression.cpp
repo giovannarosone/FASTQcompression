@@ -50,7 +50,7 @@ vector<uint64_t> freqs(256,0);//temporary vector used to count frequency of base
 vector<uint64_t> statistics_qual_before(256,0);//count absolute frequencies of qualities in reads, before modifying
 vector<uint64_t> statistics_qual_after(256,0);//count absolute frequencies of qualities in reads, after modifying
 
-int border = 0;//exclude this number of bases at the borders of the analyzed cluster
+int border = 1;//exclude/include this number of bases at the borders of the analyzed cluster
 
 //minimum LCP required inside clusters
 int K_def = 16;
@@ -407,7 +407,11 @@ void process_cluster(uint64_t begin, uint64_t i){
 
     num_cluster++;
 
-    uint64_t size = (i-begin+1);
+    //shift by border
+    uint64_t start=(begin>=border?begin-border:0);
+    uint64_t end=(i>=border?i-border:0);
+	
+    uint64_t size = (end-start+1);
 
     clusters_size += size;
 
@@ -422,14 +426,11 @@ void process_cluster(uint64_t begin, uint64_t i){
 
     char mostfreq;
 
-    //include/exclude some bases
-    uint64_t start=(begin>=border?begin-border:0);
-
     //printing bases+QS in the cluster to look them up
 
     cout << "----\n";
 
-    for(uint64_t j = start; j <= i; ++j){
+    for(uint64_t j = start; j <= end; ++j){
 
 
         /*Counts the frequency of each base and stores it in a vector, moreover stores the maximum/avg QS in a variable*/
@@ -444,16 +445,16 @@ void process_cluster(uint64_t begin, uint64_t i){
       through default_value we set the new quality score value to a fixed value previously calculated */
 
     #if M==0
-	newqs = max_qs(start,i);
+	newqs = max_qs(start,end);
     #elif M==1
-	newqs = avg_qs(start,i);
+	newqs = avg_qs(start,end);
     #elif M==2
 	newqs = default_value;
     #elif M==3
-	newqs = mean_error(start,i);
+	newqs = mean_error(start,end);
     #else
 	cout << "WARNING: unsupported choice. The process will use M=0." << endl;
-	newqs = max_qs(start,i);
+	newqs = max_qs(start,end);
     #endif
 
     #if B==1
@@ -469,7 +470,7 @@ void process_cluster(uint64_t begin, uint64_t i){
 
 
     /*In this cycle we modify the values of QS and, if the base is less frequent than rare_threshold and its QS is minor then quality_threshold, also the value stored in BWT_MOD*/
-    for(uint64_t j = start; j <= i; ++j){
+    for(uint64_t j = start; j <= end; ++j){
 
 	if(bwt[j] != bwt.get_term()){
 
