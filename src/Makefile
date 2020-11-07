@@ -6,9 +6,11 @@ MY_CXX=g++
 
 M=0
 MODE = -DM=$(M) 
+B=0
+BIN = -DB=$(B)
 LFLAGS = -lm -ldl
 
-CXX_FLAGS=$(MY_CXX_FLAGS) $(MY_CXX_OPT_FLAGS) $(LFLAGS) $(MODE)
+CXX_FLAGS=$(MY_CXX_FLAGS) $(MY_CXX_OPT_FLAGS) $(LFLAGS) $(MODE) $(BIN)
 
 ####
 
