@@ -78,13 +78,10 @@ cd ..
 ./src/fastqcompression -e dataset/example.fq.ebwt -q dataset/example.fq.ebwt.qs -f dataset/example.fq -o result.fq
 ```
 where
-example.fq.ebwt is the ebwt string,
-
-example.fq.ebwt.qs is the associated permuted qs string,
-
-example.fq is the original FASTQ file,
-
-result.fq is a new FASTQ file (output).
+- example.fq.ebwt is the ebwt string,
+- example.fq.ebwt.qs is the associated permuted qs string,
+- example.fq is the original FASTQ file,
+- result.fq is a new FASTQ file (output).
 
 
 Summing up what FASTQcompression does:
