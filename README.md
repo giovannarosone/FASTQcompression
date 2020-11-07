@@ -54,15 +54,19 @@ Elapsed time: 0.7864
 
 ## FASTQcompression
 There are some parameter we can set to compile FASTQCompression in order to change the QS smoothing approach.
-* The parameter M is to choose one option among:
-- smoothing QS with MAX_QS (M=0)
-- smoothing QS with Avg_QS (M=1)
-- smoothing QS with default value (M=2)
-- smoothing QS with Mean_Err (M=3)
-* The parameter B is to use Illumina 8 level binning (B=1)
+
+** The parameter M is to choose one option among:
+  - smoothing QS with MAX_QS (M=0)
+  - smoothing QS with Avg_QS (M=1)
+  - smoothing QS with default value (M=2)
+  - smoothing QS with Mean_Err (M=3)
+  
+** The parameter B is to use Illumina 8 level binning (B=1).
+
 The default parameters are M=0 and B=0.
 
 For example, to smooth QS by using Mean_Err+Illumina_8_level_binning, compile FASTQcompression by
+
 ```sh
 cd src
 make M=3 B=1
@@ -70,6 +74,7 @@ make M=3 B=1
 To run only FASTQcompression use the command:
 
 ```sh
+cd ..
 ./src/fastqcompression -e dataset/example.fq.ebwt -q dataset/example.fq.ebwt.qs -f dataset/example.fq -o result.fq
 ```
 where
@@ -80,9 +85,11 @@ result.fq is a new FASTQ file (output).
 
 Summing up what FASTQcompression does:
 
-1. It takes in input the ebwt string and the associated permuted qs string, which have been obtained from a FASTQ file as pre-processing. Note that it takes in input the original FASTQ file only for recovering headers.
+1. It takes in input the ebwt string and the associated permuted qs string, which have been obtained from a FASTQ file as pre-processing. 
+Note that it takes in input the original FASTQ file only for recovering headers.
 
-2. It uses the code/library in https://github.com/nicolaprezza/bwt2lcp to set two binary vectors: LCP_minima and LCP_Threshold, where
+2. It uses the code/library in https://github.com/nicolaprezza/bwt2lcp to set two binary vectors: 
+LCP_minima and LCP_Threshold, where
   - LCP_Threshold[i]=1 iff LCP[i]>=k (where k is a threshold value, default 16),
   - LCP_minima=1 iff LCP[i] is a local minimum.
 
