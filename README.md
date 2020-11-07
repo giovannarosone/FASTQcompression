@@ -55,13 +55,13 @@ Elapsed time: 0.7864
 ## FASTQcompression
 There are some parameter we can set to compile FASTQCompression in order to change the QS smoothing approach.
 
-** The parameter M is to choose one option among:
+1) The parameter M is to choose one option among:
   - smoothing QS with MAX_QS (M=0)
   - smoothing QS with Avg_QS (M=1)
   - smoothing QS with default value (M=2)
   - smoothing QS with Mean_Err (M=3)
   
-** The parameter B is to use Illumina 8 level binning (B=1).
+2) The parameter B is to use Illumina 8 level binning (B=1).
 
 The default parameters are M=0 and B=0.
 
@@ -82,6 +82,7 @@ example.fq.ebwt is the ebwt string,
 example.fq.ebwt.qs is the associated permuted qs string,
 example.fq is the original FASTQ file,
 result.fq is a new FASTQ file (output).
+
 
 Summing up what FASTQcompression does:
 
