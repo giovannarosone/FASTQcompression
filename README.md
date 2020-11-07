@@ -56,10 +56,10 @@ Elapsed time: 0.7864
 There are some parameter we can set to compile FASTQCompression in order to change the QS smoothing approach.
 
 1) The parameter M is to choose one option among:
-  - smoothing QS with MAX_QS (M=0)
-  - smoothing QS with Avg_QS (M=1)
-  - smoothing QS with default value (M=2)
-  - smoothing QS with Mean_Err (M=3)
+    - smoothing QS with MAX_QS (M=0)
+    - smoothing QS with Avg_QS (M=1)
+    - smoothing QS with default value (M=2)
+    - smoothing QS with Mean_Err (M=3)
   
 2) The parameter B is to use Illumina 8 level binning (B=1).
 
@@ -79,8 +79,11 @@ cd ..
 ```
 where
 example.fq.ebwt is the ebwt string,
+
 example.fq.ebwt.qs is the associated permuted qs string,
+
 example.fq is the original FASTQ file,
+
 result.fq is a new FASTQ file (output).
 
 
@@ -91,8 +94,8 @@ Note that it takes in input the original FASTQ file only for recovering headers.
 
 2. It uses the code/library in https://github.com/nicolaprezza/bwt2lcp to set two binary vectors: 
 LCP_minima and LCP_Threshold, where
-  - LCP_Threshold[i]=1 iff LCP[i]>=k (where k is a threshold value, default 16),
-  - LCP_minima=1 iff LCP[i] is a local minimum.
+    - LCP_Threshold[i]=1 iff LCP[i]>=k (where k is a threshold value, default 16),
+    - LCP_minima=1 iff LCP[i] is a local minimum.
 
 3. It detects and analyzes a cluster on the basis of LCP_minima and LCP_Threshold:
 eBWT symbols in any cluster may be changed according to the most frequent symbol in their own cluster, while QS values in clusters are always smoothed according to the choosen strategy.
