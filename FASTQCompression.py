@@ -24,7 +24,7 @@ gzip_exe = "gzip -9 -k -f"
 #zip7_exe = "7z a -mx9 -mmt12"
 zip7_exe = "7z a -mm=PPMd"
 
-smooth_exe = "src/fastqcompression"
+smooth_exe = "src/fq_compression"
 
 def main():
     parser = argparse.ArgumentParser(description=Description, formatter_class=argparse.RawTextHelpFormatter)
@@ -98,7 +98,7 @@ def main():
         # compressed files
         args.output = []
 
-        # --- step5: compress QS, reads and headers separatedly 
+        # --- step5: compress new FASTQ, new ebwt string, new qs string and headers separatedly 
         start = time.time()
         if(step5(args, logfile, logfile_name)!=True):
             sys.exit(1)
