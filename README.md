@@ -4,6 +4,7 @@
 
 ```sh
 git clone --recursive https://github.com/giovannarosone/FASTQcompression.git 
+cd FASTQcompression
 make
 ```
 
