@@ -22,16 +22,16 @@ OUTPUT=../../output.fq
 
 all: main 
 
-main: FASTQcompression.cpp  
-	$(MY_CXX) FASTQcompression.cpp -o fastqcompression  $(CXX_FLAGS) 
+main: fq_compression.cpp  
+	$(MY_CXX) fq_compression.cpp -o fq_compression  $(CXX_FLAGS) 
 
 clean:
-	rm -f fastqcompression 
+	rm -f fq_compression 
 
 run:
-	./fastqcompression -e $(INPUT).bwt -q $(INPUT).bwt.qs -f $(INPUT).bwt -o $(OUTPUT) 
+	./fq_compression -e $(INPUT).bwt -q $(INPUT).bwt.qs -f $(INPUT).bwt -o $(OUTPUT) 
 	
 valgrind: 
-	$(MY_CXX) FASTQcompression.cpp -o fastqcompression-test $(VLIB)
-	valgrind --tool=memcheck --leak-check=full --track-origins=yes ./fastqcompression-test -e $(INPUT).bwt -q $(INPUT).bwt.qs -f $(INPUT).bwt -o $(OUTPUT) 
+	$(MY_CXX) fq_compression.cpp -o fq_compression-test $(VLIB)
+	valgrind --tool=memcheck --leak-check=full --track-origins=yes ./fq_compression-test -e $(INPUT).bwt -q $(INPUT).bwt.qs -f $(INPUT).bwt -o $(OUTPUT) 
 
