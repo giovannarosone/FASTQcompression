@@ -22,34 +22,34 @@ Sending logging messages to file: results/output.log
 external/gsufsort/gsufsort dataset/reads.fastq --bwt --lcp --qs -o results/output
 Elapsed time: 0.1522
 === smooth-qs ===
-src/fastqcompression dataset/reads.fastq -e results/output.bwt -q results/output.bwt.qs -f dataset/reads.fastq -o results/output.fq
-Elapsed time: 0.3771
+src/fq_compression -e results/output.bwt -q results/output.bwt.qs -f dataset/reads.fastq -o results/output.fq
+Elapsed time: 0.5366
 === header ===
-sed -n 1~4p results/output.fq > results/output.h
-Elapsed time: 0.0049
-=== streams ===
-sed -n 2~4p dataset/reads.fastq > results/output.dna
-sed -n 4~4p dataset/reads.fastq > results/output.qs
-Elapsed time: 0.0096
+sed -n 1~4p dataset/reads.fastq > results/output.h
+Elapsed time: 0.0121
+=== gsufsort ===
+external/gsufsort/gsufsort results/output.fq --bwt --qs -o results/output.fq
+Elapsed time: 0.1224
 === compression ===
-7z a -mx9 -mmt12 results/output.h.7z results/output.h
-7z a -mx9 -mmt12 results/output.dna.7z results/output.dna
-7z a -mx9 -mmt12 results/output.qs.7z results/output.qs
-Elapsed time: 0.6872
+7z a -mm=PPMd results/output.fq.7z results/output.fq
+7z a -mm=PPMd results/output.h.7z results/output.h
+7z a -mm=PPMd results/output.fq.bwt.7z results/output.fq.bwt
+7z a -mm=PPMd results/output.fq.bwt.qs.7z results/output.fq.bwt.qs
+Elapsed time: 0.3376
 === results ===
 Original:	2.44 MB
-Compressed:	0.43 MB
-Ratio = 0.18
+Compressed:	0.91 MB
+Ratio = 0.37
 === gzip ===
 gzip -9 -k -f dataset/reads.fastq
 Compressed:	0.59 MB
 Ratio = 0.24
-Elapsed time: 0.5498
+Elapsed time: 0.4503
 === 7z ===
-7z a -mx9 -mmt12 dataset/reads.fastq.7z dataset/reads.fastq
-Compressed:	0.49 MB
-Ratio = 0.20
-Elapsed time: 0.7864
+7z a -mm=PPMd dataset/reads.fastq.7z dataset/reads.fastq
+Compressed:	0.43 MB
+Ratio = 0.18
+Elapsed time: 0.1437
 ```
 
 
