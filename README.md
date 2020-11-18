@@ -110,3 +110,26 @@ where
 - example.fq.ebwt.qs is the associated permuted qs string,
 - example.fq is the original FASTQ file,
 - result.fq is a new FASTQ file (output).
+
+
+
+
+#### References:
+
+Degree thesis
+
+University of Pisa
+
+Titolo: Compressione di sequenze di DNA in formato FASTQ
+
+
+Candidato: Enrico Niccoli
+
+Relatore: Giovanna Rosone
+Co-relatore: Veronica Guerrini
+
+
+---
+<small> Supported by the project Italian MIUR-SIR [CMACBioSeq][240fb5f5] ("_Combinatorial methods for analysis and compression of biological sequences_") grant n.~RBSI146R5L. P.I. Giovanna Rosone</small>
+
+[240fb5f5]: http://pages.di.unipi.it/rosone/CMACBioSeq.html
