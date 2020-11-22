@@ -116,18 +116,16 @@ where
 
 ## References:
 
-Degree thesis
+@thesis{mastersthesis,
+  author       = {Enrico Niccoli}, 
+  title        = {Compressione di sequenze di DNA in formato FASTQ},
+  school       = {University of Pisa},
+  note         = {Supervisors: Giovanna Rosone and Veronica Guerrini}
+}
 
-University of Pisa
+## Acknowledgement
 
-Titolo: Compressione di sequenze di DNA in formato FASTQ
-
-
-Candidato: Enrico Niccoli
-
-Relatore: Giovanna Rosone
-Co-relatore: Veronica Guerrini
-
+Thanks to Nicola Prezza for providing part of the code and to Felipe Louza for helpful discussions.
 
 ---
 <small> Supported by the project Italian MIUR-SIR [CMACBioSeq][240fb5f5] ("_Combinatorial methods for analysis and compression of biological sequences_") grant n.~RBSI146R5L. P.I. Giovanna Rosone</small>
