@@ -116,12 +116,14 @@ where
 
 ## References:
 
+```sh
 @thesis{mastersthesis,
   author       = {Enrico Niccoli}, 
   title        = {Compressione di sequenze di DNA in formato FASTQ},
   school       = {University of Pisa},
   note         = {Supervisors: Giovanna Rosone and Veronica Guerrini}
 }
+```
 
 ## Acknowledgement
 
