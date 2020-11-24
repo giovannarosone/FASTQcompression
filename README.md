@@ -19,7 +19,7 @@ python3 FASTQCompression.py dataset/reads.fastq -o results/output --all
 ```sh
 Sending logging messages to file: results/output.log
 === gsufsort ===
-external/gsufsort/gsufsort dataset/reads.fastq --bwt --lcp --qs -o results/output
+external/gsufsort/gsufsort dataset/reads.fastq --bwt --qs -o results/output
 Elapsed time: 0.1522
 === smooth-qs ===
 src/fq_compression -e results/output.bwt -q results/output.bwt.qs -f dataset/reads.fastq -o results/output.fq
