@@ -117,7 +117,7 @@ where
 ## References:
 
 ```sh
-@thesis{mastersthesis,
+@thesis{thesisNiccoli,
   author       = {Enrico Niccoli}, 
   title        = {Compressione di sequenze di DNA in formato FASTQ},
   school       = {University of Pisa},
