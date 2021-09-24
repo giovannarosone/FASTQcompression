@@ -1,6 +1,6 @@
 # FASTQcompression
 
-## install
+## Install
 
 ```sh
 git clone --recursive https://github.com/giovannarosone/FASTQcompression.git 
@@ -8,7 +8,7 @@ cd FASTQcompression
 make
 ```
 
-## run
+## Run
 
 Given a string collection in reads.fastq:
 
